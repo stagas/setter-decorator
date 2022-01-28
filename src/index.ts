@@ -6,7 +6,7 @@ const ctors = new WeakMap()
  * Decorates a class as `@settable`. This is required for `@setter` to work.
  *
  * ```ts
- * ​@settable
+ * @settable
  * class Data { ... }
  * ```
  *
@@ -23,7 +23,9 @@ export const settable = (ctor: any) => {
       super(...args)
       // we fetch the properties from the constructor function
       const props = ctors.get(ctor)
-      const data = Object.fromEntries([...props].map(([key, fn]) => [key, fn(this[key])]))
+      const data = Object.fromEntries(
+        [...props].map(([key, fn]) => [key, fn.call(this, this[key])])
+      )
       defineAccessors(this, data, key => {
         const fn = props.get(key)
         return {
@@ -33,7 +35,7 @@ export const settable = (ctor: any) => {
             return data[key]
           },
           set(value: never) {
-            data[key] = fn(value, data[key])
+            data[key] = fn.call(this, value, data[key])
           },
         }
       })
@@ -55,15 +57,15 @@ export const settable = (ctor: any) => {
  * Attaches a `@setter` to a property.
  *
  * ```ts
- * ​@settable
+ * @settable
  * class Data {
- *   ​@setter(value => (value != null ? +value : value))
+ *   @setter(value => (value != null ? +value : value))
  *   foo?: number
  *
- *   ​@setter(value => value != null)
+ *   @setter(value => value != null)
  *   bar!: boolean
  *
- *   ​@setter(value => value[0].toUpperCase() + value.slice(1))
+ *   @setter(value => value[0].toUpperCase() + value.slice(1))
  *   name = 'john'
  * }
  * ```
@@ -74,15 +76,15 @@ export const settable = (ctor: any) => {
  * const boolean = setter(value => value != null)
  * const personName = setter(value => value[0].toUpperCase() + value.slice(1).toLowerCase())
  *
- * ​@settable
+ * @settable
  * class Data {
- *   ​@nullableNumber
+ *   @nullableNumber
  *   foo?: number
  *
- *   ​@boolean
+ *   @boolean
  *   bar!: boolean
  *
- *   ​@personName
+ *   @personName
  *   name = 'john'
  * }
  * ```

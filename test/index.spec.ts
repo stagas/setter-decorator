@@ -1,4 +1,4 @@
-import { setter, settable } from '../'
+import { settable, setter } from '../src'
 
 describe('settable/setter', () => {
   it('attaches setters to properties in a class decorated as settable', () => {
@@ -72,5 +72,24 @@ describe('settable/setter', () => {
     expect(data.sum).toEqual(15)
     data.sum = 20
     expect(data.sum).toEqual(35)
+  })
+
+  it('uses context', () => {
+    @settable
+    class Data {
+      min = 2
+      max = 6
+
+      @setter(function (this: Data, value) {
+        return Math.max(this.min, Math.min(this.max, value))
+      })
+      value = 0
+    }
+    const data = new Data()
+    expect(data.value).toEqual(2)
+    data.value = 10
+    expect(data.value).toEqual(6)
+    data.value = -10
+    expect(data.value).toEqual(2)
   })
 })

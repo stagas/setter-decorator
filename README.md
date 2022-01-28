@@ -13,7 +13,7 @@ decorator that attaches setters to properties
  · <a href="https://github.com/stagas/setter-decorator/issues">   🖐️ <strong>Help</strong></a>
 </p>
 
-***
+---
 
 ## Install
 
@@ -27,44 +27,44 @@ $ npm i setter-decorator
 
 #### Table of Contents
 
-*   [settable](#settable)
-    *   [Parameters](#parameters)
-*   [setter](#setter)
-    *   [Parameters](#parameters-1)
+- [settable](#settable)
+  - [Parameters](#parameters)
+- [setter](#setter)
+  - [Parameters](#parameters-1)
 
 ### settable
 
-[src/index.ts:17-52](https://github.com/stagas/setter-decorator/blob/bec6119780ba541811a2b943018055864fec875b/src/index.ts#L17-L52 "Source code on GitHub")
+[src/index.ts:17-52](https://github.com/stagas/setter-decorator/blob/bec6119780ba541811a2b943018055864fec875b/src/index.ts#L17-L52 'Source code on GitHub')
 
 Decorates a class as `@settable`. This is required for `@setter` to work.
 
 ```ts
-​@settable
+@settable
 class Data { ... }
 ```
 
 #### Parameters
 
-*   `ctor` **any** The class to decorate
+- `ctor` **any** The class to decorate
 
 Returns **any** The decorated class
 
 ### setter
 
-[src/index.ts:92-109](https://github.com/stagas/setter-decorator/blob/bec6119780ba541811a2b943018055864fec875b/src/index.ts#L92-L109 "Source code on GitHub")
+[src/index.ts:92-109](https://github.com/stagas/setter-decorator/blob/bec6119780ba541811a2b943018055864fec875b/src/index.ts#L92-L109 'Source code on GitHub')
 
 Attaches a `@setter` to a property.
 
 ```ts
-​@settable
+@settable
 class Data {
-  ​@setter(value => (value != null ? +value : value))
+  @setter(value => (value != null ? +value : value))
   foo?: number
 
-  ​@setter(value => value != null)
+  @setter(value => value != null)
   bar!: boolean
 
-  ​@setter(value => value[0].toUpperCase() + value.slice(1))
+  @setter(value => value[0].toUpperCase() + value.slice(1))
   name = 'john'
 }
 ```
@@ -76,22 +76,22 @@ const nullableNumber = setter(value => (value != null ? +value : value))
 const boolean = setter(value => value != null)
 const personName = setter(value => value[0].toUpperCase() + value.slice(1).toLowerCase())
 
-​@settable
+@settable
 class Data {
-  ​@nullableNumber
+  @nullableNumber
   foo?: number
 
-  ​@boolean
+  @boolean
   bar!: boolean
 
-  ​@personName
+  @personName
   name = 'john'
 }
 ```
 
 #### Parameters
 
-*   `fn` **function (newValue: any, oldValue: any): any** The setter function
+- `fn` **function (newValue: any, oldValue: any): any** The setter function
 
 Returns **PropertyDecorator** A property decorator
 
