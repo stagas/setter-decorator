@@ -40,7 +40,7 @@
     "test:web": "web-test-runner",
     "cov": "jest --coverage",
     "lint": "eslint src && prettier --check src",
-    "build:watch": "tsc --outDir dist/esm --module esnext --watch & tsc --outDir dist/cjs --watch",
+    "build:watch": "tsc -p tsconfig.dist.json --outDir dist/esm --module esnext --watch & tsc -p tsconfig.dist.json --outDir dist/cjs --watch",
     "docs:watch": "onchange -i src --await-write-finish 400 -- npm run docs",
     "test:watch": "jest --watchAll",
     "cov:watch": "jest --coverage --watchAll",

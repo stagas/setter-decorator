@@ -92,4 +92,56 @@ describe('settable/setter', () => {
     data.value = -10
     expect(data.value).toEqual(2)
   })
+
+  it('accepts multiple setters per property', () => {
+    @settable
+    class Data {
+      min = 2
+      max = 6
+
+      @setter(value => +value)
+      @setter(function (this: Data, value) {
+        return Math.max(this.min, Math.min(this.max, value))
+      })
+      value = 0
+    }
+    const data = new Data()
+    expect(data.value).toEqual(2)
+    data.value = '10' as never
+    expect(data.value).toEqual(6)
+    data.value = '-10' as never
+    expect(data.value).toEqual(2)
+  })
+
+  it('every setter maintains its own oldValue', () => {
+    class Value<T> {
+      #v: T | null = null
+      constructor(value: T) {
+        this.#v = value
+      }
+      get() {
+        return this.#v
+      }
+      set(value: any) {
+        this.#v = value
+        return this
+      }
+    }
+
+    @settable
+    class Data {
+      @setter((newValue, oldValue) =>
+        oldValue instanceof Value ? oldValue.set(newValue) : new Value(newValue)
+      )
+      @setter((newValue, oldValue) => +(oldValue ?? 0) + +(newValue ?? 0))
+      value!: Value<number>
+    }
+    const data = new Data()
+    expect(data.value).toBeInstanceOf(Value)
+    expect(data.value.get()).toEqual(0)
+    data.value = '10' as never
+    expect(data.value.get()).toEqual(10)
+    data.value = '-3' as never
+    expect(data.value.get()).toEqual(7)
+  })
 })

@@ -1,6 +1,27 @@
 import { defineAccessors } from 'define-accessors'
 
-const ctors = new WeakMap()
+interface Constructor<T> {
+  new (...args: any[]): T
+}
+
+interface Setter {
+  (newValue: any, oldValue?: any): unknown
+}
+
+const ctors = new WeakMap<Constructor<any>, Map<string | symbol, Setter[]>>()
+
+const applySetters = (context: any, newValue: any, oldValue: any, setters: Setter[]) => {
+  const values = []
+  let i = 0
+  for (const fn of setters) {
+    console.log(fn)
+    console.log(oldValue[i], newValue)
+    values[i] = newValue = fn.call(context, newValue, oldValue[i])
+    console.log(oldValue[i], newValue)
+    i++
+  }
+  return values
+}
 
 /**
  * Decorates a class as `@settable`. This is required for `@setter` to work.
@@ -22,20 +43,23 @@ export const settable = (ctor: any) => {
     constructor(...args: any) {
       super(...args)
       // we fetch the properties from the constructor function
-      const props = ctors.get(ctor)
+      const props = ctors.get(ctor)!
       const data = Object.fromEntries(
-        [...props].map(([key, fn]) => [key, fn.call(this, this[key])])
+        [...props].map(([key, setters]) => [
+          key,
+          applySetters(this, (this as any)[key], [], setters),
+        ])
       )
       defineAccessors(this, data, key => {
-        const fn = props.get(key)
+        const setters = props.get(key)!
         return {
           configurable: false,
           enumerable: true,
           get() {
-            return data[key]
+            return data[key].at(-1)
           },
           set(value: never) {
-            data[key] = fn.call(this, value, data[key])
+            data[key] = applySetters(this, value, data[key], setters)
           },
         }
       })
@@ -92,20 +116,24 @@ export const settable = (ctor: any) => {
  * @returns A property decorator
  */
 export const setter =  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  (fn: (newValue?: any, oldValue?: any) => unknown): PropertyDecorator =>
+  (fn: Setter): PropertyDecorator =>
   (target, propertyKey) => {
     // the constructor here points to the old, undecorated version
     // that we inherit from so we store a pointer and retrieve
     // in our constructor (see above)
-    const ctor = target.constructor
+    const ctor = target.constructor as Constructor<any>
 
     let props
     if (!ctors.has(ctor)) {
-      props = new Map()
+      props = new Map<string | symbol, Setter[]>()
       ctors.set(ctor, props)
     } else {
-      props = ctors.get(ctor)
+      props = ctors.get(ctor)!
     }
 
-    props.set(propertyKey, fn)
+    if (props.has(propertyKey)) {
+      props.get(propertyKey)!.push(fn)
+    } else {
+      props.set(propertyKey, [fn])
+    }
   }
