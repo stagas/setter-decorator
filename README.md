@@ -34,7 +34,7 @@ $ npm i setter-decorator
 
 ### settable
 
-[src/index.ts:17-54](https://github.com/stagas/setter-decorator/blob/ada04150e069963aaf37f9ecd67fcbd89ab3b92a/src/index.ts#L17-L54 "Source code on GitHub")
+[src/index.ts:38-78](https://github.com/stagas/setter-decorator/blob/9ab074c96756c31246c980ee714a59e4df31541d/src/index.ts#L38-L78 "Source code on GitHub")
 
 Decorates a class as `@settable`. This is required for `@setter` to work.
 
@@ -49,7 +49,7 @@ Returns **any** The decorated class
 
 ### setter
 
-[src/index.ts:94-111](https://github.com/stagas/setter-decorator/blob/ada04150e069963aaf37f9ecd67fcbd89ab3b92a/src/index.ts#L94-L111 "Source code on GitHub")
+[src/index.ts:118-139](https://github.com/stagas/setter-decorator/blob/9ab074c96756c31246c980ee714a59e4df31541d/src/index.ts#L118-L139 "Source code on GitHub")
 
 Attaches a `@setter` to a property.
 
@@ -58,7 +58,7 @@ Attaches a `@setter` to a property.
 
 #### Parameters
 
-*   `fn` **function (newValue: any, oldValue: any): any** The setter function
+*   `fn` **Setter** The setter function
 
 Returns **PropertyDecorator** A property decorator
 
