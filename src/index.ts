@@ -14,10 +14,7 @@ const applySetters = (context: any, newValue: any, oldValue: any, setters: Sette
   const values = []
   let i = 0
   for (const fn of setters) {
-    console.log(fn)
-    console.log(oldValue[i], newValue)
     values[i] = newValue = fn.call(context, newValue, oldValue[i])
-    console.log(oldValue[i], newValue)
     i++
   }
   return values
