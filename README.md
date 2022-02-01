@@ -34,7 +34,7 @@ $ npm i setter-decorator
 
 ### settable
 
-[src/index.ts:35-75](https://github.com/stagas/setter-decorator/blob/0076726640e9028925253a75fc5db985e9d7f45b/src/index.ts#L35-L75 "Source code on GitHub")
+[src/index.ts:35-82](https://github.com/stagas/setter-decorator/blob/572b4c74029e822f2e0a8c79ca87b1bc97c016dd/src/index.ts#L35-L82 "Source code on GitHub")
 
 Decorates a class as `@settable`. This is required for `@setter` to work.
 
@@ -49,7 +49,7 @@ Returns **any** The decorated class
 
 ### setter
 
-[src/index.ts:115-136](https://github.com/stagas/setter-decorator/blob/0076726640e9028925253a75fc5db985e9d7f45b/src/index.ts#L115-L136 "Source code on GitHub")
+[src/index.ts:122-143](https://github.com/stagas/setter-decorator/blob/572b4c74029e822f2e0a8c79ca87b1bc97c016dd/src/index.ts#L122-L143 "Source code on GitHub")
 
 Attaches a `@setter` to a property.
 
