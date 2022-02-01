@@ -28,6 +28,28 @@ describe('settable/setter', () => {
     expect(data.name).toEqual('Sofia')
   })
 
+  it('works for classes without any property decorator', () => {
+    @settable
+    class Data {
+      foo?: number
+      bar!: boolean
+      name = 'john'
+    }
+
+    const data = new Data()
+    expect(data.foo).toBeUndefined()
+    data.foo = '42' as unknown as number
+    expect(data.foo).toEqual('42')
+    expect(data.bar).toBeUndefined()
+    data.bar = 'anything' as unknown as boolean
+    expect(data.bar).toEqual('anything')
+    data.bar = null as unknown as boolean
+    expect(data.bar).toEqual(null)
+    expect(data.name).toEqual('john')
+    data.name = 'sofia'
+    expect(data.name).toEqual('sofia')
+  })
+
   it('works with prefactoried decorators', () => {
     const nullableNumber = setter(value => (value != null ? +value : value))
     const boolean = setter(value => value != null)

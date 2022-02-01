@@ -39,14 +39,18 @@ export const settable = (ctor: any) => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     constructor(...args: any) {
       super(...args)
+
       // we fetch the properties from the constructor function
-      const props = ctors.get(ctor)!
+      const props = ctors.get(ctor)
+      if (!props) return
+
       const data = Object.fromEntries(
         [...props].map(([key, setters]) => [
           key,
           applySetters(this, (this as any)[key], [], setters),
         ])
       )
+
       defineAccessors(this, data, key => {
         const setters = props.get(key)!
         return {
@@ -62,12 +66,15 @@ export const settable = (ctor: any) => {
       })
     }
   }
+
+  // name the anonymous class with the decorated class' name
   Object.defineProperty(Ctor, 'name', {
     configurable: false,
     enumerable: false,
     writable: false,
     value: ctor.name,
   })
+
   // type doesn't matter since TS is ignoring decorator return types
   // but maybe in the future it will change:
   // https://github.com/microsoft/TypeScript/issues/4881
